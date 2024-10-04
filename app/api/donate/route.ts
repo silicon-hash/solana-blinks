@@ -18,7 +18,7 @@ import {
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const payload: ActionGetResponse = {
-    icon: "/images/icon.png", // Local icon path
+    icon: "/ma.png", // Local icon path
     title: "Donate to Rahul",
     description: "Support Rahul by donating SOL.",
     label: "Donate",
@@ -27,6 +27,7 @@ export async function GET(request: Request) {
         {
           label: "Donate 0.1 SOL",
           href: `${url.href}?amount=0.1`,
+          type: "transaction"
         },
       ],
     },
@@ -73,12 +74,13 @@ export async function POST(request: Request) {
   transaction.feePayer = sender;
   transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
   transaction.lastValidBlockHeight = (await connection.getLatestBlockhash()).lastValidBlockHeight;
-
   const payload: ActionPostResponse = await createPostResponse({
     fields: {
       transaction,
       message: "Transaction created",
+      type: "transaction", // Add the missing 'type' proper
     },
+   
   });
   return new Response(JSON.stringify(payload), {
     headers: ACTIONS_CORS_HEADERS,
